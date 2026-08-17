@@ -31,14 +31,6 @@ async function load(){
   $('#popupHeightValue').value = Number(mtSettings.popupHeightValue ?? mtSettings.popupSizeValue ?? 20);
   $('#popupHeightUnit').value = mtSettings.popupHeightUnit || mtSettings.popupSizeUnit || 'vw';
 
-  // V5 Enhanced settings
-  $('#enableCaching').checked = mtSettings.enableCaching !== undefined ? Boolean(mtSettings.enableCaching) : true;
-  $('#enableBilingual').checked = Boolean(mtSettings.enableBilingual);
-  $('#enableFocusMode').checked = mtSettings.enableFocusMode !== undefined ? Boolean(mtSettings.enableFocusMode) : true;
-  $('#enableAutoHideOriginal').checked = Boolean(mtSettings.enableAutoHideOriginal);
-  $('#cacheMaxSize').value = Number(mtSettings.cacheMaxSize ?? 500);
-  $('#transitionDuration').value = Number(mtSettings.transitionDuration ?? 220);
-
   // show/hide api key field when provider requires it
   function updateApiKeyVisibility(){
     const p = $('#provider').value;
@@ -131,15 +123,6 @@ async function save(){
   settings.popupWidthUnit = $('#popupWidthUnit').value || 'vw';
   settings.popupHeightValue = Number($('#popupHeightValue').value || 20);
   settings.popupHeightUnit = $('#popupHeightUnit').value || 'vw';
-  
-  // V5 Enhanced settings
-  settings.enableCaching = !!$('#enableCaching').checked;
-  settings.enableBilingual = !!$('#enableBilingual').checked;
-  settings.enableFocusMode = !!$('#enableFocusMode').checked;
-  settings.enableAutoHideOriginal = !!$('#enableAutoHideOriginal').checked;
-  settings.cacheMaxSize = Number($('#cacheMaxSize').value || 500);
-  settings.transitionDuration = Number($('#transitionDuration').value || 220);
-  
   await chrome.storage.local.set({ mtSettings: settings });
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (tab?.id){

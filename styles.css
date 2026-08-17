@@ -1,21 +1,104 @@
 
-/* styles.css — scoped styling for caption enhancements only (V4) */
+/* styles.css — V5 ENHANCED */
+/* Scoped styling for caption enhancements with smooth transitions and visual indicators */
+
 .mt-enhanced-captions, .mt-enhanced-captions * {
   font-family: var(--mt-font-stack, 'Vazirmatn', 'Roboto', 'Arial', sans-serif) !important;
 }
-.mt-translated { display: inline-block; }
+
+.mt-translated { 
+  display: inline-block; 
+  transition: opacity 0.22s ease, transform 0.18s ease;
+}
 
 /* Finalized / in-progress containers for smoother updates */
 .mt-translation-wrapper { display: inline; }
 .mt-finalized { display: inline; }
-.mt-finalized-sentence { display: inline; opacity: 1; transition: opacity 0.18s ease; }
-.mt-inprogress { display: inline; opacity: 0.85; transition: opacity 0.18s ease; font-style: normal; }
+
+/* Enhanced sentence-level transitions with configurable duration via CSS variable */
+.mt-finalized-sentence { 
+  display: inline; 
+  opacity: 1; 
+  transition: opacity var(--mt-transition-duration, 220ms) ease, 
+              background-color var(--mt-transition-duration, 220ms) ease;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+/* Focus mode: highlight newly translated sentences */
+.mt-finalized-sentence.new {
+  background-color: rgba(0, 255, 100, 0.15);
+  animation: mt-fade-highlight 1.5s ease-out forwards;
+}
+
+@keyframes mt-fade-highlight {
+  0% { background-color: rgba(0, 255, 100, 0.25); }
+  100% { background-color: transparent; }
+}
+
+.mt-inprogress { 
+  display: inline; 
+  opacity: 0.75; 
+  transition: opacity var(--mt-transition-duration, 220ms) ease; 
+  font-style: normal; 
+}
+
+/* Confidence indicator colors */
+.mt-confidence-high {
+  border-left: 3px solid #4CAF50; /* green */
+  padding-left: 4px;
+}
+
+.mt-confidence-medium {
+  border-left: 3px solid #FFC107; /* yellow */
+  padding-left: 4px;
+}
+
+.mt-confidence-low {
+  border-left: 3px solid #F44336; /* red */
+  padding-left: 4px;
+}
 
 /* Small finalized/in-progress indicator */
-.mt-indicator { color: rgba(255,255,255,0.65); margin-left:6px; }
+.mt-indicator { 
+  color: rgba(255,255,255,0.65); 
+  margin-left: 6px;
+  font-size: 0.85em;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+/* Bilingual display mode */
+.mt-bilingual-original {
+  display: block;
+  opacity: 0.85;
+  font-size: 0.95em;
+  margin-bottom: 2px;
+  color: inherit;
+  transition: opacity var(--mt-transition-duration, 220ms) ease;
+}
+
+.mt-bilingual-translated {
+  display: block;
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+/* Auto-hide original text */
+.mt-autohide-original {
+  opacity: 0;
+  transition: opacity var(--mt-transition-duration, 220ms) ease;
+}
+
+.mt-autohide-original:hover {
+  opacity: 0.7;
+}
 
 /* Subtle styling for pruned sentences (if rehydrated) */
-.mt-finalized-sentence.pruned { opacity: 0.6; font-size: 0.95em; }
+.mt-finalized-sentence.pruned { 
+  opacity: 0.6; 
+  font-size: 0.95em; 
+}
 
 /* Preserve user profile images */
 .mt-enhanced-captions img {
@@ -24,24 +107,50 @@
   vertical-align: middle;
 }
 
-/* Popup translation box */
+/* Popup translation box with enhanced smoothness */
 .mt-popup-box {
-  /* Make popup roughly square and stable: 20% of viewport width (20vw) */
   width: 20vw !important;
   height: 20vw !important;
   max-width: 320px !important;
   max-height: 320px !important;
   box-sizing: border-box;
-  overflow: auto; /* allow scrolling when content exceeds the fixed box */
-  transition: opacity 0.25s ease;
+  overflow: auto;
+  transition: opacity var(--mt-transition-duration, 220ms) ease,
+              transform var(--mt-transition-duration, 220ms) ease;
   opacity: 1;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
-/* Smooth transitions for translated inline text */
-.mt-translated {
-  transition: opacity 0.22s ease, transform 0.18s ease;
-}
+/* Smooth transitions for all translated elements */
+.mt-translated,
 .mt-popup-text {
-  transition: opacity 0.25s ease;
+  transition: opacity var(--mt-transition-duration, 220ms) ease,
+              transform var(--mt-transition-duration, 220ms) ease;
 }
 
+/* RTL support for Persian/Arabic */
+[dir="rtl"] .mt-translated,
+[dir="rtl"] .mt-popup-text {
+  text-align: right;
+  direction: rtl;
+}
+
+/* Scrollbar styling for popup */
+.mt-popup-box::-webkit-scrollbar {
+  width: 6px;
+}
+
+.mt-popup-box::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.mt-popup-box::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.mt-popup-box::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
