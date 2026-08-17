@@ -1,8 +1,6 @@
-// contentScript.js — V5 ENHANCED
+// contentScript.js — V4
 // Targets Meet captions only. Preserves user profile images.
 // Auto source language (sl=auto).
-// ENHANCEMENTS: Translation caching, sentence queue processor, confidence indicators,
-// focus mode, bilingual display option, enhanced smooth transitions, auto-hide original
 
 const STATE = {
   enabled: true,
@@ -17,50 +15,8 @@ const STATE = {
   popupBgColor: '#000000',
   popupTextColor: '#ffffff',
   lineHeight: 1.3,
-  meetingKey: null,
-  // NEW V5 features
-  enableCaching: true,
-  enableBilingual: false,
-  enableFocusMode: true,
-  enableAutoHideOriginal: false,
-  cacheMaxSize: 500,
-  transitionDuration: 220,
-  confidenceThresholds: { high: 0.85, medium: 0.65 }
+  meetingKey: null
 };
-
-// Translation cache with LRU eviction
-const translationCache = new Map();
-let cacheAccessOrder = [];
-
-function cacheGet(key) {
-  if (!STATE.enableCaching) return null;
-  const entry = translationCache.get(key);
-  if (entry) {
-    // Move to end (most recently used)
-    cacheAccessOrder = cacheAccessOrder.filter(k => k !== key);
-    cacheAccessOrder.push(key);
-    return entry.translation;
-  }
-  return null;
-}
-
-function cacheSet(key, translation, confidence = 1.0) {
-  if (!STATE.enableCaching) return;
-  
-  // Evict oldest if at max size
-  if (translationCache.size >= STATE.cacheMaxSize) {
-    const oldestKey = cacheAccessOrder.shift();
-    if (oldestKey) translationCache.delete(oldestKey);
-  }
-  
-  translationCache.set(key, { translation, confidence, timestamp: Date.now() });
-  cacheAccessOrder.push(key);
-}
-
-function cacheClear() {
-  translationCache.clear();
-  cacheAccessOrder = [];
-}
 
 // Load settings
 chrome.storage.local.get(['mtSettings']).then(({ mtSettings }) => {
@@ -92,13 +48,6 @@ chrome.storage.local.get(['mtSettings']).then(({ mtSettings }) => {
   STATE.popupWidthUnit = mtSettings.popupWidthUnit || mtSettings.popupSizeUnit || 'vw';
   STATE.popupHeightValue = Number(mtSettings.popupHeightValue ?? mtSettings.popupSizeValue ?? 20);
   STATE.popupHeightUnit = mtSettings.popupHeightUnit || mtSettings.popupSizeUnit || 'vw';
-  // NEW V5 settings
-  STATE.enableCaching = mtSettings.enableCaching !== undefined ? Boolean(mtSettings.enableCaching) : true;
-  STATE.enableBilingual = Boolean(mtSettings.enableBilingual);
-  STATE.enableFocusMode = mtSettings.enableFocusMode !== undefined ? Boolean(mtSettings.enableFocusMode) : true;
-  STATE.enableAutoHideOriginal = Boolean(mtSettings.enableAutoHideOriginal);
-  STATE.cacheMaxSize = Number(mtSettings.cacheMaxSize ?? 500);
-  STATE.transitionDuration = Number(mtSettings.transitionDuration ?? 220);
   }
 });
 
@@ -491,14 +440,6 @@ function applyVars(container){
 
 // translate accepts an optional AbortSignal as third arg
 async function translate(text, targetLang, signal){
-  // Check cache first
-  const cacheKey = `${text}|${targetLang}`;
-  const cached = cacheGet(cacheKey);
-  if (cached) {
-    console.debug('Cache hit:', text.substring(0, 30));
-    return cached;
-  }
-  
   // Try provider-specific implementations with graceful fallback
   const p = STATE.provider || 'google';
   const apiKey = STATE.providerApiKey || '';
@@ -506,26 +447,10 @@ async function translate(text, targetLang, signal){
   let lastErr = null;
   for (const prov of providersOrder) {
     try {
-  if (prov === 'google') {
-    const result = await translateWithGoogle(text, targetLang, signal);
-    cacheSet(cacheKey, result);
-    return result;
-  }
-  if (prov === 'libre') {
-    const result = await translateWithLibre(text, targetLang, 'https://translate.argosopentech.com/translate', signal);
-    cacheSet(cacheKey, result);
-    return result;
-  }
-  if (prov === 'libre-de') {
-    const result = await translateWithLibre(text, targetLang, 'https://libretranslate.de/translate', signal);
-    cacheSet(cacheKey, result);
-    return result;
-  }
-  if (prov === 'mymemory') {
-    const result = await translateWithMyMemory(text, targetLang, apiKey, signal);
-    cacheSet(cacheKey, result);
-    return result;
-  }
+  if (prov === 'google') return await translateWithGoogle(text, targetLang, signal);
+  if (prov === 'libre') return await translateWithLibre(text, targetLang, 'https://translate.argosopentech.com/translate', signal);
+  if (prov === 'libre-de') return await translateWithLibre(text, targetLang, 'https://libretranslate.de/translate', signal);
+  if (prov === 'mymemory') return await translateWithMyMemory(text, targetLang, apiKey, signal);
     } catch (e) {
       lastErr = e;
       // continue to next provider
@@ -577,16 +502,7 @@ window.addEventListener('message', ev => {
     STATE.fontSize = Number(s.fontSize || STATE.fontSize);
     STATE.color = s.color || STATE.color;
     STATE.lineHeight = Number(s.lineHeight || STATE.lineHeight);
-    // NEW V5 settings update
-    STATE.enableCaching = s.enableCaching !== undefined ? Boolean(s.enableCaching) : STATE.enableCaching;
-    STATE.enableBilingual = Boolean(s.enableBilingual);
-    STATE.enableFocusMode = s.enableFocusMode !== undefined ? Boolean(s.enableFocusMode) : STATE.enableFocusMode;
-    STATE.enableAutoHideOriginal = Boolean(s.enableAutoHideOriginal);
-    STATE.cacheMaxSize = Number(s.cacheMaxSize ?? STATE.cacheMaxSize);
-    STATE.transitionDuration = Number(s.transitionDuration ?? STATE.transitionDuration);
     if (captionsRegion) applyVars(captionsRegion);
-    // Clear cache if caching was disabled
-    if (!STATE.enableCaching) cacheClear();
   }
 });
 
