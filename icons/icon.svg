@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+  <!-- Background gradient -->
+  <rect width="128" height="128" rx="24" fill="url(#paint0_linear)" />
+  
+  <!-- Caption lines -->
+  <path d="M32 40H96" stroke="white" stroke-width="6" stroke-linecap="round" />
+  <path d="M32 56H96" stroke="white" stroke-width="6" stroke-linecap="round" />
+  <path d="M32 72H64" stroke="white" stroke-width="6" stroke-linecap="round" />
+  
+  <!-- Translation checkmark -->
+  <path d="M72 72L80 80L96 64" stroke="#38BDF8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+  
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="128" y2="128" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6366F1" />
+      <stop offset="1" stop-color="#0F172A" />
+    </linearGradient>
+  </defs>
+</svg>

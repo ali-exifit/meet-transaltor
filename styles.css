@@ -1,0 +1,47 @@
+
+/* styles.css — scoped styling for caption enhancements only (V4) */
+.mt-enhanced-captions, .mt-enhanced-captions * {
+  font-family: var(--mt-font-stack, 'Vazirmatn', 'Roboto', 'Arial', sans-serif) !important;
+}
+.mt-translated { display: inline-block; }
+
+/* Finalized / in-progress containers for smoother updates */
+.mt-translation-wrapper { display: inline; }
+.mt-finalized { display: inline; }
+.mt-finalized-sentence { display: inline; opacity: 1; transition: opacity 0.18s ease; }
+.mt-inprogress { display: inline; opacity: 0.85; transition: opacity 0.18s ease; font-style: normal; }
+
+/* Small finalized/in-progress indicator */
+.mt-indicator { color: rgba(255,255,255,0.65); margin-left:6px; }
+
+/* Subtle styling for pruned sentences (if rehydrated) */
+.mt-finalized-sentence.pruned { opacity: 0.6; font-size: 0.95em; }
+
+/* Preserve user profile images */
+.mt-enhanced-captions img {
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* Popup translation box */
+.mt-popup-box {
+  /* Make popup roughly square and stable: 20% of viewport width (20vw) */
+  width: 20vw !important;
+  height: 20vw !important;
+  max-width: 320px !important;
+  max-height: 320px !important;
+  box-sizing: border-box;
+  overflow: auto; /* allow scrolling when content exceeds the fixed box */
+  transition: opacity 0.25s ease;
+  opacity: 1;
+}
+
+/* Smooth transitions for translated inline text */
+.mt-translated {
+  transition: opacity 0.22s ease, transform 0.18s ease;
+}
+.mt-popup-text {
+  transition: opacity 0.25s ease;
+}
+

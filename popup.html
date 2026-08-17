@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meet Caption Translator</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      width: 320px;
+      background-color: #000;
+      color: #0F0;
+      font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    h1 {
+      color: #0F0;
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #0F0;
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="color"],
+    select {
+      width: calc(100% - 20px);
+      padding: 5px;
+      margin-bottom: 10px;
+      border: 1px solid #0F0;
+      background-color: #000;
+      color: #0F0;
+      font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
+    }
+    button {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #0F0;
+      background-color: #000;
+      color: #0F0;
+      font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
+      cursor: pointer;
+    }
+    .preview-section {
+      border: 1px dashed #0F0;
+      padding: 10px;
+      min-height: 60px;
+      color: #0F0;
+      font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
+      word-break: break-word;
+    }
+    .preview-section img {
+      display: none; /* Hide profile images in terminal style */
+    }
+    .download-info {
+      color: #0F0;
+      font-size: 0.9em;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Meet Caption Translator</h1>
+
+    <!-- Top tabs removed per user request -->
+
+    <div id="settingsPage">
+    <div>
+      <label for="lang">Target Language:</label>
+      <select id="lang">
+        <option value="fa">Persian</option>
+        <option value="ar">Arabic</option>
+        <option value="en">English</option>
+        <option value="es">Spanish</option>
+        <option value="fr">French</option>
+        <option value="de">German</option>
+        <option value="it">Italian</option>
+        <option value="ja">Japanese</option>
+        <option value="ko">Korean</option>
+        <option value="pt">Portuguese</option>
+        <option value="ru">Russian</option>
+        <option value="zh-CN">Chinese (Simplified)</option>
+      </select>
+
+      <!-- Quick Select removed per user request -->
+
+      <label for="provider">Translation Provider:</label>
+      <select id="provider">
+        <option value="google">Google (translate.googleapis.com)</option>
+        <option value="libre">LibreTranslate (Argos OpenTech)</option>
+        <option value="libre-de">LibreTranslate (libretranslate.de)</option>
+        <option value="mymemory">MyMemory (mymemory.translated.net)</option>
+      </select>
+
+      <label for="providerApiKey" id="providerApiKeyLabel" style="display:none">API Key (optional):</label>
+      <input type="text" id="providerApiKey" placeholder="API key (if required)" style="display:none">
+
+      <label for="fontStack">Font Stack:</label>
+  <input type="text" id="fontStack" value="'Vazirmatn', 'Roboto', 'Arial', sans-serif">
+
+  <label for="fontSize">Font Size (px):</label>
+  <input type="number" id="fontSize" value="23" min="10" max="60">
+
+      <label for="color">Text Color:</label>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input type="color" id="color" value="#ffffff" style="width:32px; height:32px; border-radius:50%; border:1px solid #0F0; background:transparent; padding:0;">
+        <input type="text" id="colorCode" value="#ffffff" maxlength="7" style="width:80px; font-family:monospace;">
+      </div>
+
+      <label for="lineHeight">Line Height:</label>
+  <input type="number" id="lineHeight" value="1.7" step="0.1" min="1" max="3.0">
+
+      <label for="displayMode">Display Mode:</label>
+      <select id="displayMode">
+        <option value="integrated">Integrated (replace captions)</option>
+        <option value="popup">Popup (floating translated box)</option>
+      </select>
+
+  <label style="margin-top:8px; display:block;">Advanced behavior:</label>
+  <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enableReconcile"> Enable reconciliation of edited captions</label>
+  <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enablePrune"> Auto-prune old inline translations to limit DOM growth</label>
+  <label style="display:flex; align-items:center; gap:8px;">Debounce ms: <input type="number" id="debounceMs" value="280" style="width:80px; margin-left:6px;"></label>
+  <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="showIndicator"> Show finalized/in-progress visual indicator</label>
+  <label style="display:flex; align-items:center; gap:8px; margin-top:6px;">Prune threshold (sentences kept in DOM): <input type="number" id="pruneThreshold" value="20" style="width:80px; margin-left:6px;"></label>
+  <label style="display:flex; align-items:center; gap:8px;">Reconciliation window (sentences): <input type="number" id="reconcileWindow" value="3" style="width:80px; margin-left:6px;"></label>
+  <label style="display:flex; align-items:center; gap:8px;">Max words per translate request: <input type="number" id="maxWords" value="30" style="width:80px; margin-left:6px;"></label>
+
+  <div id="popupControls" style="margin-top:8px; display:none;">
+        <label for="popupPosition">Popup Position:</label>
+        <select id="popupPosition">
+          <option value="top-left">Top Left</option>
+          <option value="top-center">Top Center</option>
+          <option value="top-right">Top Right</option>
+          <option value="center">Center</option>
+          <option value="bottom-left">Bottom Left</option>
+          <option value="bottom-right">Bottom Right</option>
+          <option value="custom">Custom (px offsets)</option>
+        </select>
+
+        <div id="popupOffsetRow" style="display:none; margin-top:6px; gap:6px; display:flex;">
+          <label style="display:flex; align-items:center; gap:6px;">Offset X: <input type="number" id="popupOffsetX" value="20" style="width:80px; margin-left:6px;"></label>
+          <label style="display:flex; align-items:center; gap:6px;">Offset Y: <input type="number" id="popupOffsetY" value="20" style="width:80px; margin-left:6px;"></label>
+        </div>
+
+        <label for="popupBgColor">Popup Background:</label>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <input type="color" id="popupBgColor" value="#131314" style="width:32px; height:32px; border-radius:50%;">
+          <input type="text" id="popupBgColorCode" value="#131314" maxlength="7" style="width:90px; font-family:monospace;">
+        </div>
+
+        <label for="popupTextColor">Popup Text Color:</label>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <input type="color" id="popupTextColor" value="#ffffff" style="width:32px; height:32px; border-radius:50%;">
+          <input type="text" id="popupTextColorCode" value="#ffffff" maxlength="7" style="width:90px; font-family:monospace;">
+        </div>
+
+        <label style="display:flex; align-items:center; gap:8px; margin-top:8px;">Popup Width:</label>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input type="number" id="popupWidthValue" value="20" min="8" max="100" style="width:80px;">
+          <select id="popupWidthUnit">
+            <option value="vw">vw (viewport width)</option>
+            <option value="px">px</option>
+            <option value="%">% (percent of container)</option>
+          </select>
+          <span style="opacity:0.8; font-size:0.9em;">(Width will be set from this value)</span>
+        </div>
+
+        <label style="display:flex; align-items:center; gap:8px; margin-top:8px;">Popup Height:</label>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input type="number" id="popupHeightValue" value="60" min="8" max="100" style="width:80px;">
+          <select id="popupHeightUnit">
+            <option value="vw">vw (viewport width)</option>
+            <option value="px">px</option>
+            <option value="%">% (percent of container)</option>
+          </select>
+          <span style="opacity:0.8; font-size:0.9em;">(Height will be set from this value)</span>
+        </div>
+      </div>
+    </div>
+
+    </div>
+    <div class="preview-section" id="preview">
+      <span class="mt-translated">سلام دنیا</span>
+    </div>
+
+    <button id="save">Save Settings</button>
+
+    </div>
+
+    <div id="downloadsPage" style="display:none;">
+      <h2>Downloads</h2>
+      <p class="download-info">Transcripts will be downloaded as files.</p>
+      <div class="saved-meetings-section">
+        <ul id="savedMeetingsListDownloads"></ul>
+      </div>
+    </div>
+
+    <div class="footer">
+      <a href="https://github.com/proalit" target="_blank">ProAlit On GitHub</a>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
