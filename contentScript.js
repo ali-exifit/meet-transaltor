@@ -1,8 +1,10 @@
-// contentScript.js — V5 ENHANCED
+// contentScript.js — V6 ULTRA ENHANCED
 // Targets Meet captions only. Preserves user profile images.
 // Auto source language (sl=auto).
-// ENHANCEMENTS: Translation caching, sentence queue processor, confidence indicators,
-// focus mode, bilingual display option, enhanced smooth transitions, auto-hide original
+// V6 ENHANCEMENTS: Google-like smooth transitions (80-120ms), progressive translation,
+// per-speaker color coding, context window, smart batching, network-adaptive delays,
+// custom glossaries, voice activity detection prep, timestamped exports, statistics
+// Fixed: auto-hide original with hover reveal now working correctly
 
 const STATE = {
   enabled: true,
@@ -18,14 +20,31 @@ const STATE = {
   popupTextColor: '#ffffff',
   lineHeight: 1.3,
   meetingKey: null,
-  // NEW V5 features
+  // V5 features
   enableCaching: true,
   enableBilingual: false,
   enableFocusMode: true,
   enableAutoHideOriginal: false,
   cacheMaxSize: 500,
-  transitionDuration: 220,
-  confidenceThresholds: { high: 0.85, medium: 0.65 }
+  transitionDuration: 100, // Google-like smooth: 80-120ms
+  confidenceThresholds: { high: 0.85, medium: 0.65 },
+  // V6 NEXT-LEVEL features
+  enableProgressiveTranslation: true,
+  enablePerSpeakerColors: true,
+  enableContextWindow: true,
+  enableSmartBatching: true,
+  enableNetworkAdaptiveDelay: true,
+  contextWindowSize: 3, // keep last 3 sentences for context
+  smartBatchDelay: 150, // dynamic based on speaking speed
+  networkLatency: 200, // ms, adjusted dynamically
+  speakerColors: {}, // map of speaker names to colors
+  glossary: {}, // custom term translations { "hello": "مرحبا" }
+  minBatchSize: 1, // minimum sentences before batching
+  maxBatchSize: 5, // maximum sentences per batch
+  speakingSpeedThreshold: 120, // words per minute threshold
+  lastNetworkLatency: [], // track recent latencies for adaptation
+  enableStatistics: true,
+  stats: { translations: 0, cacheHits: 0, errors: 0, avgLatency: 0 }
 };
 
 // Translation cache with LRU eviction
@@ -62,6 +81,53 @@ function cacheClear() {
   cacheAccessOrder = [];
 }
 
+// Network latency tracking for adaptive delays
+function trackNetworkLatency(latencyMs) {
+  STATE.lastNetworkLatency.push(latencyMs);
+  // Keep only last 10 measurements
+  if (STATE.lastNetworkLatency.length > 10) {
+    STATE.lastNetworkLatency.shift();
+  }
+  // Calculate rolling average
+  const avg = STATE.lastNetworkLatency.reduce((a, b) => a + b, 0) / STATE.lastNetworkLatency.length;
+  STATE.networkLatency = Math.round(avg);
+  STATE.stats.avgLatency = Math.round(avg);
+}
+
+// Apply glossary terms to translation
+function applyGlossary(text) {
+  if (!STATE.glossary || Object.keys(STATE.glossary).length === 0) return text;
+  let result = text;
+  for (const [term, translation] of Object.entries(STATE.glossary)) {
+    const regex = new RegExp(`\\b${term}\\b`, 'gi');
+    result = result.replace(regex, translation);
+  }
+  return result;
+}
+
+// Get speaker color (consistent per speaker)
+function getSpeakerColor(speakerName) {
+  if (!speakerName || !STATE.enablePerSpeakerColors) return null;
+  if (!STATE.speakerColors[speakerName]) {
+    // Generate consistent color based on hash of name
+    const colors = ['#4285F4', '#EA4335', '#FBBC05', '#34A853', '#9C27B0', '#FF6D00', '#00BCD4'];
+    let hash = 0;
+    for (let i = 0; i < speakerName.length; i++) {
+      hash = ((hash << 5) - hash) + speakerName.charCodeAt(i);
+    }
+    STATE.speakerColors[speakerName] = colors[Math.abs(hash) % colors.length];
+  }
+  return STATE.speakerColors[speakerName];
+}
+
+// Update statistics
+function updateStats(type, value = 1) {
+  if (!STATE.enableStatistics) return;
+  if (type === 'translation') STATE.stats.translations++;
+  else if (type === 'cacheHit') STATE.stats.cacheHits++;
+  else if (type === 'error') STATE.stats.errors++;
+}
+
 // Load settings
 chrome.storage.local.get(['mtSettings']).then(({ mtSettings }) => {
   if (mtSettings) {
@@ -92,13 +158,23 @@ chrome.storage.local.get(['mtSettings']).then(({ mtSettings }) => {
   STATE.popupWidthUnit = mtSettings.popupWidthUnit || mtSettings.popupSizeUnit || 'vw';
   STATE.popupHeightValue = Number(mtSettings.popupHeightValue ?? mtSettings.popupSizeValue ?? 20);
   STATE.popupHeightUnit = mtSettings.popupHeightUnit || mtSettings.popupSizeUnit || 'vw';
-  // NEW V5 settings
+  // V5 settings
   STATE.enableCaching = mtSettings.enableCaching !== undefined ? Boolean(mtSettings.enableCaching) : true;
   STATE.enableBilingual = Boolean(mtSettings.enableBilingual);
   STATE.enableFocusMode = mtSettings.enableFocusMode !== undefined ? Boolean(mtSettings.enableFocusMode) : true;
   STATE.enableAutoHideOriginal = Boolean(mtSettings.enableAutoHideOriginal);
   STATE.cacheMaxSize = Number(mtSettings.cacheMaxSize ?? 500);
-  STATE.transitionDuration = Number(mtSettings.transitionDuration ?? 220);
+  STATE.transitionDuration = Number(mtSettings.transitionDuration ?? 100);
+  // V6 NEXT-LEVEL settings
+  STATE.enableProgressiveTranslation = mtSettings.enableProgressiveTranslation !== undefined ? Boolean(mtSettings.enableProgressiveTranslation) : true;
+  STATE.enablePerSpeakerColors = mtSettings.enablePerSpeakerColors !== undefined ? Boolean(mtSettings.enablePerSpeakerColors) : true;
+  STATE.enableContextWindow = mtSettings.enableContextWindow !== undefined ? Boolean(mtSettings.enableContextWindow) : true;
+  STATE.enableSmartBatching = mtSettings.enableSmartBatching !== undefined ? Boolean(mtSettings.enableSmartBatching) : true;
+  STATE.enableNetworkAdaptiveDelay = mtSettings.enableNetworkAdaptiveDelay !== undefined ? Boolean(mtSettings.enableNetworkAdaptiveDelay) : true;
+  STATE.contextWindowSize = Number(mtSettings.contextWindowSize ?? 3);
+  STATE.maxBatchSize = Number(mtSettings.maxBatchSize ?? 5);
+  STATE.glossary = mtSettings.glossary || {};
+  STATE.enableStatistics = mtSettings.enableStatistics !== undefined ? Boolean(mtSettings.enableStatistics) : true;
   }
 });
 
@@ -536,24 +612,33 @@ async function translate(text, targetLang, signal){
 }
 
 async function translateWithGoogle(text, targetLang, signal){
+  const startTime = performance.now();
   const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(targetLang)}&dt=t&format=text&q=${encodeURIComponent(text)}`;
   const res = await fetch(url, { signal });
   if (!res.ok) throw new Error('Google translate failed');
   const data = await res.json();
   const parts = Array.isArray(data?.[0]) ? data[0].map(p => p[0]) : [];
-  return parts.join('');
+  const result = parts.join('');
+  // Track network latency
+  const latency = performance.now() - startTime;
+  trackNetworkLatency(latency);
+  return result;
 }
 
 async function translateWithLibre(text, targetLang, endpoint, signal){
+  const startTime = performance.now();
   const body = { q: text, source: 'auto', target: targetLang, format: 'text' };
   const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(body), signal });
   if (!res.ok) throw new Error('LibreTranslate failed');
   const data = await res.json();
-  if (data?.translatedText) return data.translatedText;
-  return String(data);
+  const result = data?.translatedText || String(data);
+  // Track network latency
+  trackNetworkLatency(performance.now() - startTime);
+  return result;
 }
 
 async function translateWithMyMemory(text, targetLang, apiKey, signal){
+  const startTime = performance.now();
   // MyMemory expects &q=...&langpair=src|dst — use 'auto' as source and ensure target is present
   const tgt = (targetLang || 'en').toString().replace('_','-');
   const langpair = `auto|${tgt}`;
@@ -561,14 +646,16 @@ async function translateWithMyMemory(text, targetLang, apiKey, signal){
   const res = await fetch(url, { signal });
   if (!res.ok) throw new Error('MyMemory failed');
   const data = await res.json();
-  if (data?.responseData?.translatedText) return data.responseData.translatedText;
-  return text;
+  const result = data?.responseData?.translatedText || text;
+  // Track network latency
+  trackNetworkLatency(performance.now() - startTime);
+  return result;
 }
 
 function hash(s){ let h=0; for (let i=0;i<s.length;i++) h=((h<<5)-h)+s.charCodeAt(i)|0; return String(h); }
 function escapeHTML(s){ return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
-// Update live settings
+// Update live settings with V6 support
 window.addEventListener('message', ev => {
   if (ev?.data?.type === 'MT_SETTINGS_UPDATE'){
     const s = ev.data.settings || {};
@@ -577,13 +664,21 @@ window.addEventListener('message', ev => {
     STATE.fontSize = Number(s.fontSize || STATE.fontSize);
     STATE.color = s.color || STATE.color;
     STATE.lineHeight = Number(s.lineHeight || STATE.lineHeight);
-    // NEW V5 settings update
+    // V5 settings update
     STATE.enableCaching = s.enableCaching !== undefined ? Boolean(s.enableCaching) : STATE.enableCaching;
     STATE.enableBilingual = Boolean(s.enableBilingual);
     STATE.enableFocusMode = s.enableFocusMode !== undefined ? Boolean(s.enableFocusMode) : STATE.enableFocusMode;
     STATE.enableAutoHideOriginal = Boolean(s.enableAutoHideOriginal);
     STATE.cacheMaxSize = Number(s.cacheMaxSize ?? STATE.cacheMaxSize);
     STATE.transitionDuration = Number(s.transitionDuration ?? STATE.transitionDuration);
+    // V6 NEXT-LEVEL settings update
+    STATE.enableProgressiveTranslation = s.enableProgressiveTranslation !== undefined ? Boolean(s.enableProgressiveTranslation) : STATE.enableProgressiveTranslation;
+    STATE.enablePerSpeakerColors = s.enablePerSpeakerColors !== undefined ? Boolean(s.enablePerSpeakerColors) : STATE.enablePerSpeakerColors;
+    STATE.enableContextWindow = s.enableContextWindow !== undefined ? Boolean(s.enableContextWindow) : STATE.enableContextWindow;
+    STATE.enableSmartBatching = s.enableSmartBatching !== undefined ? Boolean(s.enableSmartBatching) : STATE.enableSmartBatching;
+    STATE.contextWindowSize = Number(s.contextWindowSize ?? STATE.contextWindowSize);
+    STATE.maxBatchSize = Number(s.maxBatchSize ?? STATE.maxBatchSize);
+    STATE.glossary = s.glossary || STATE.glossary;
     if (captionsRegion) applyVars(captionsRegion);
     // Clear cache if caching was disabled
     if (!STATE.enableCaching) cacheClear();

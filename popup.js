@@ -37,7 +37,15 @@ async function load(){
   $('#enableFocusMode').checked = mtSettings.enableFocusMode !== undefined ? Boolean(mtSettings.enableFocusMode) : true;
   $('#enableAutoHideOriginal').checked = Boolean(mtSettings.enableAutoHideOriginal);
   $('#cacheMaxSize').value = Number(mtSettings.cacheMaxSize ?? 500);
-  $('#transitionDuration').value = Number(mtSettings.transitionDuration ?? 220);
+  $('#transitionDuration').value = Number(mtSettings.transitionDuration ?? 100);
+  // V6 Next-Level settings
+  $('#enableProgressiveTranslation').checked = mtSettings.enableProgressiveTranslation !== undefined ? Boolean(mtSettings.enableProgressiveTranslation) : true;
+  $('#enablePerSpeakerColors').checked = mtSettings.enablePerSpeakerColors !== undefined ? Boolean(mtSettings.enablePerSpeakerColors) : true;
+  $('#enableContextWindow').checked = mtSettings.enableContextWindow !== undefined ? Boolean(mtSettings.enableContextWindow) : true;
+  $('#enableSmartBatching').checked = mtSettings.enableSmartBatching !== undefined ? Boolean(mtSettings.enableSmartBatching) : true;
+  $('#contextWindowSize').value = Number(mtSettings.contextWindowSize ?? 3);
+  $('#maxBatchSize').value = Number(mtSettings.maxBatchSize ?? 5);
+  $('#enableStatistics').checked = mtSettings.enableStatistics !== undefined ? Boolean(mtSettings.enableStatistics) : true;
 
   // show/hide api key field when provider requires it
   function updateApiKeyVisibility(){
@@ -138,7 +146,15 @@ async function save(){
   settings.enableFocusMode = !!$('#enableFocusMode').checked;
   settings.enableAutoHideOriginal = !!$('#enableAutoHideOriginal').checked;
   settings.cacheMaxSize = Number($('#cacheMaxSize').value || 500);
-  settings.transitionDuration = Number($('#transitionDuration').value || 220);
+  settings.transitionDuration = Number($('#transitionDuration').value || 100);
+  // V6 Next-Level settings
+  settings.enableProgressiveTranslation = !!$('#enableProgressiveTranslation').checked;
+  settings.enablePerSpeakerColors = !!$('#enablePerSpeakerColors').checked;
+  settings.enableContextWindow = !!$('#enableContextWindow').checked;
+  settings.enableSmartBatching = !!$('#enableSmartBatching').checked;
+  settings.contextWindowSize = Number($('#contextWindowSize').value || 3);
+  settings.maxBatchSize = Number($('#maxBatchSize').value || 5);
+  settings.enableStatistics = !!$('#enableStatistics').checked;
   
   await chrome.storage.local.set({ mtSettings: settings });
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
