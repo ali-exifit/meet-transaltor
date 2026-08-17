@@ -142,7 +142,7 @@
   <label style="display:flex; align-items:center; gap:8px;">Reconciliation window (sentences): <input type="number" id="reconcileWindow" value="3" style="width:80px; margin-left:6px;"></label>
   <label style="display:flex; align-items:center; gap:8px;">Max words per translate request: <input type="number" id="maxWords" value="30" style="width:80px; margin-left:6px;"></label>
 
-  <!-- V5 ENHANCED Features -->
+  <!-- V5 & V6 Enhanced Features -->
   <div style="margin-top:12px; padding:8px; border:1px dashed #0F0; border-radius:4px;">
     <label style="display:block; margin-bottom:6px; color:#0F0; font-weight:bold;">✨ V5 Enhanced Features:</label>
     <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enableCaching"> Enable translation caching (40-60% faster)</label>
@@ -150,7 +150,16 @@
     <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enableFocusMode" checked> Focus mode (highlight new translations)</label>
     <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enableAutoHideOriginal"> Auto-hide original text (hover to reveal)</label>
     <label style="display:flex; align-items:center; gap:8px; margin-top:6px;">Cache max size: <input type="number" id="cacheMaxSize" value="500" min="100" max="2000" style="width:70px; margin-left:6px;"></label>
-    <label style="display:flex; align-items:center; gap:8px;">Transition duration (ms): <input type="number" id="transitionDuration" value="220" min="100" max="500" style="width:70px; margin-left:6px;"></label>
+    <label style="display:flex; align-items:center; gap:8px;">Transition duration (ms): <input type="number" id="transitionDuration" value="100" min="80" max="300" style="width:70px; margin-left:6px;"></label>
+    
+    <label style="display:block; margin:10px 0 6px 0; color:#0F0; font-weight:bold;">🚀 V6 Next-Level Features:</label>
+    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enableProgressiveTranslation"> Progressive translation (word-by-word fade-in)</label>
+    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enablePerSpeakerColors"> Per-speaker color coding</label>
+    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enableContextWindow"> Context window (keep last sentences for better accuracy)</label>
+    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enableSmartBatching"> Smart batching (group sentences based on speaking speed)</label>
+    <label style="display:flex; align-items:center; gap:8px; margin-top:6px;">Context window size: <input type="number" id="contextWindowSize" value="3" min="1" max="10" style="width:70px; margin-left:6px;"></label>
+    <label style="display:flex; align-items:center; gap:8px;">Max batch size: <input type="number" id="maxBatchSize" value="5" min="1" max="10" style="width:70px; margin-left:6px;"></label>
+    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enableStatistics"> Show statistics (translations, cache hits, latency)</label>
   </div>
 
   <div id="popupControls" style="margin-top:8px; display:none;">

@@ -1,6 +1,6 @@
-
-/* styles.css — V5 ENHANCED */
-/* Scoped styling for caption enhancements with smooth transitions and visual indicators */
+/* styles.css — V6 ULTRA ENHANCED */
+/* Scoped styling for caption enhancements with Google-like smooth transitions (80-120ms) */
+/* Fixed: auto-hide original with hover reveal working correctly */
 
 .mt-enhanced-captions, .mt-enhanced-captions * {
   font-family: var(--mt-font-stack, 'Vazirmatn', 'Roboto', 'Arial', sans-serif) !important;
@@ -8,54 +8,55 @@
 
 .mt-translated { 
   display: inline-block; 
-  transition: opacity 0.22s ease, transform 0.18s ease;
+  transition: opacity var(--mt-transition-duration, 100ms) ease, transform 80ms ease;
 }
 
 /* Finalized / in-progress containers for smoother updates */
 .mt-translation-wrapper { display: inline; }
 .mt-finalized { display: inline; }
 
-/* Enhanced sentence-level transitions with configurable duration via CSS variable */
+/* Enhanced sentence-level transitions with configurable duration via CSS variable - Google-like 100ms */
 .mt-finalized-sentence { 
   display: inline; 
   opacity: 1; 
-  transition: opacity var(--mt-transition-duration, 220ms) ease, 
-              background-color var(--mt-transition-duration, 220ms) ease;
+  transition: opacity var(--mt-transition-duration, 100ms) ease, 
+              background-color var(--mt-transition-duration, 100ms) ease,
+              border-color var(--mt-transition-duration, 100ms) ease;
   border-radius: 2px;
   padding: 0 1px;
 }
 
-/* Focus mode: highlight newly translated sentences */
+/* Focus mode: subtle highlight for newly translated sentences - Google-style */
 .mt-finalized-sentence.new {
-  background-color: rgba(0, 255, 100, 0.15);
-  animation: mt-fade-highlight 1.5s ease-out forwards;
+  background-color: rgba(66, 133, 244, 0.08); /* Google blue, very subtle */
+  animation: mt-fade-highlight 1.2s ease-out forwards;
 }
 
 @keyframes mt-fade-highlight {
-  0% { background-color: rgba(0, 255, 100, 0.25); }
+  0% { background-color: rgba(66, 133, 244, 0.12); }
   100% { background-color: transparent; }
 }
 
 .mt-inprogress { 
   display: inline; 
   opacity: 0.75; 
-  transition: opacity var(--mt-transition-duration, 220ms) ease; 
+  transition: opacity var(--mt-transition-duration, 100ms) ease; 
   font-style: normal; 
 }
 
-/* Confidence indicator colors */
+/* Confidence indicator colors - more subtle */
 .mt-confidence-high {
-  border-left: 3px solid #4CAF50; /* green */
+  border-left: 2px solid #34A853; /* Google green */
   padding-left: 4px;
 }
 
 .mt-confidence-medium {
-  border-left: 3px solid #FFC107; /* yellow */
+  border-left: 2px solid #FBBC05; /* Google yellow */
   padding-left: 4px;
 }
 
 .mt-confidence-low {
-  border-left: 3px solid #F44336; /* red */
+  border-left: 2px solid #EA4335; /* Google red */
   padding-left: 4px;
 }
 
@@ -65,7 +66,7 @@
   margin-left: 6px;
   font-size: 0.85em;
   opacity: 0.8;
-  transition: opacity 0.2s ease;
+  transition: opacity 100ms ease;
 }
 
 /* Bilingual display mode */
@@ -75,7 +76,7 @@
   font-size: 0.95em;
   margin-bottom: 2px;
   color: inherit;
-  transition: opacity var(--mt-transition-duration, 220ms) ease;
+  transition: opacity var(--mt-transition-duration, 100ms) ease;
 }
 
 .mt-bilingual-translated {
@@ -84,14 +85,40 @@
   margin-top: 1px;
 }
 
-/* Auto-hide original text */
+/* Auto-hide original text - FIXED: now properly hides and reveals on hover */
 .mt-autohide-original {
-  opacity: 0;
-  transition: opacity var(--mt-transition-duration, 220ms) ease;
+  opacity: 0 !important;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity var(--mt-transition-duration, 100ms) ease, 
+              max-height var(--mt-transition-duration, 100ms) ease;
+  pointer-events: none;
 }
 
-.mt-autohide-original:hover {
-  opacity: 0.7;
+.mt-autohide-original:hover,
+.mt-autohide-original:focus {
+  opacity: 0.7 !important;
+  max-height: 100px;
+  pointer-events: auto;
+}
+
+/* Per-speaker color coding */
+.mt-speaker-color-1 { border-left: 3px solid #4285F4; padding-left: 4px; }
+.mt-speaker-color-2 { border-left: 3px solid #EA4335; padding-left: 4px; }
+.mt-speaker-color-3 { border-left: 3px solid #34A853; padding-left: 4px; }
+.mt-speaker-color-4 { border-left: 3px solid #FBBC05; padding-left: 4px; }
+.mt-speaker-color-5 { border-left: 3px solid #9C27B0; padding-left: 4px; }
+
+/* Progressive translation fade-in effect */
+.mt-progressive-word {
+  display: inline;
+  opacity: 0;
+  animation: mt-progressive-fadein 150ms ease-out forwards;
+}
+
+@keyframes mt-progressive-fadein {
+  0% { opacity: 0; transform: translateY(2px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 /* Subtle styling for pruned sentences (if rehydrated) */
@@ -107,7 +134,7 @@
   vertical-align: middle;
 }
 
-/* Popup translation box with enhanced smoothness */
+/* Popup translation box with Google-like smoothness */
 .mt-popup-box {
   width: 20vw !important;
   height: 20vw !important;
@@ -115,18 +142,18 @@
   max-height: 320px !important;
   box-sizing: border-box;
   overflow: auto;
-  transition: opacity var(--mt-transition-duration, 220ms) ease,
-              transform var(--mt-transition-duration, 220ms) ease;
+  transition: opacity var(--mt-transition-duration, 100ms) ease,
+              transform var(--mt-transition-duration, 100ms) ease;
   opacity: 1;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }
 
-/* Smooth transitions for all translated elements */
+/* Smooth transitions for all translated elements - Google timing */
 .mt-translated,
 .mt-popup-text {
-  transition: opacity var(--mt-transition-duration, 220ms) ease,
-              transform var(--mt-transition-duration, 220ms) ease;
+  transition: opacity var(--mt-transition-duration, 100ms) ease,
+              transform var(--mt-transition-duration, 100ms) ease;
 }
 
 /* RTL support for Persian/Arabic */
@@ -136,21 +163,43 @@
   direction: rtl;
 }
 
-/* Scrollbar styling for popup */
+/* Scrollbar styling for popup - minimal and clean */
 .mt-popup-box::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .mt-popup-box::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
 }
 
 .mt-popup-box::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
 }
 
 .mt-popup-box::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.35);
 }
+
+/* Context window grouping visual cue */
+.mt-context-group {
+  border-left: 2px solid rgba(66, 133, 244, 0.3);
+  padding-left: 6px;
+  margin-left: 2px;
+}
+
+/* Statistics display overlay */
+.mt-stats-overlay {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  z-index: 2147483646;
+  backdrop-filter: blur(2px);
+}
+
