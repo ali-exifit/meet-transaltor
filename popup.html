@@ -1,241 +1,1067 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meet Caption Translator</title>
+  <title>Meetranslator Settings</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    body {
-      width: 320px;
-      background-color: #000;
-      color: #0F0;
-      font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
-      padding: 10px;
-      box-sizing: border-box;
+    :root {
+      --apple-bg: #FFFFFF;
+      --apple-bg-secondary: #F5F5F7;
+      --apple-text: #1D1D1F;
+      --apple-text-secondary: #86868B;
+      --apple-blue: #0071E3;
+      --apple-blue-hover: #0077ED;
+      --apple-border: #D2D2D7;
+      --apple-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --apple-radius: 12px;
+      --apple-radius-sm: 8px;
+      --transition-speed: 0.2s;
     }
-    .container {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    h1 {
-      color: #0F0;
-      font-size: 1.2em;
-      margin-bottom: 10px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-      color: #0F0;
-    }
-    input[type="text"],
-    input[type="number"],
-    input[type="color"],
-    select {
-      width: calc(100% - 20px);
-      padding: 5px;
-      margin-bottom: 10px;
-      border: 1px solid #0F0;
-      background-color: #000;
-      color: #0F0;
-      font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
-    }
-    button {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #0F0;
-      background-color: #000;
-      color: #0F0;
-      font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
-      cursor: pointer;
-    }
-    .preview-section {
-      border: 1px dashed #0F0;
-      padding: 10px;
-      min-height: 60px;
-      color: #0F0;
-      font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
-      word-break: break-word;
-    }
-    .preview-section img {
-      display: none; /* Hide profile images in terminal style */
-    }
-    .download-info {
-      color: #0F0;
-      font-size: 0.9em;
-    }
-    ul {
-      list-style-type: none;
+
+    * {
+      margin: 0;
       padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
-    li {
-      margin-bottom: 5px;
+
+    body {
+      width: 420px;
+      min-height: 500px;
+      background-color: var(--apple-bg);
+      color: var(--apple-text);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px 24px;
+      color: white;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      font-size: 13px;
+      opacity: 0.9;
+      font-weight: 400;
+    }
+
+    .tab-bar {
+      display: flex;
+      background: var(--apple-bg-secondary);
+      border-bottom: 1px solid var(--apple-border);
+      padding: 8px 16px 0;
+      gap: 8px;
+    }
+
+    .tab-btn {
+      padding: 10px 20px;
+      border: none;
+      background: transparent;
+      color: var(--apple-text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: var(--apple-radius-sm) var(--apple-radius-sm) 0 0;
+      transition: all var(--transition-speed);
+      position: relative;
+    }
+
+    .tab-btn:hover {
+      color: var(--apple-text);
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    .tab-btn.active {
+      color: var(--apple-blue);
+      background: var(--apple-bg);
+      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--apple-blue);
+    }
+
+    .content {
+      padding: 20px 24px;
+      max-height: 520px;
+      overflow-y: auto;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section {
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--apple-text);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title .icon {
+      font-size: 16px;
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--apple-bg-secondary);
+    }
+
+    .setting-row:last-child {
+      border-bottom: none;
+    }
+
+    .setting-label {
+      flex: 1;
+      font-size: 14px;
+      color: var(--apple-text);
+    }
+
+    .setting-label small {
+      display: block;
+      font-size: 11px;
+      color: var(--apple-text-secondary);
+      margin-top: 3px;
+      font-weight: 400;
+    }
+
+    .setting-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    select, input[type="text"], input[type="number"] {
+      padding: 8px 12px;
+      border: 1px solid var(--apple-border);
+      border-radius: var(--apple-radius-sm);
+      font-size: 13px;
+      background: var(--apple-bg);
+      color: var(--apple-text);
+      transition: all var(--transition-speed);
+      outline: none;
+    }
+
+    select:focus, input[type="text"]:focus, input[type="number"]:focus {
+      border-color: var(--apple-blue);
+      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+    }
+
+    select {
+      min-width: 140px;
+    }
+
+    input[type="color"] {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--apple-border);
+      border-radius: 50%;
+      background: var(--apple-bg);
+      cursor: pointer;
+      padding: 0;
+      transition: all var(--transition-speed);
+    }
+
+    input[type="color"]:hover {
+      transform: scale(1.05);
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 30px;
+      appearance: none;
+      background: var(--apple-border);
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all var(--transition-speed);
+    }
+
+    .toggle-switch:checked {
+      background: var(--apple-blue);
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      transition: all var(--transition-speed);
+    }
+
+    .toggle-switch:checked::after {
+      left: 23px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background: var(--apple-blue);
+      color: white;
+      border: none;
+      border-radius: var(--apple-radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-speed);
+      margin-top: 16px;
+    }
+
+    .btn-primary:hover {
+      background: var(--apple-blue-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--apple-shadow);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      padding: 8px 16px;
+      background: var(--apple-bg-secondary);
+      color: var(--apple-text);
+      border: 1px solid var(--apple-border);
+      border-radius: var(--apple-radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-speed);
+    }
+
+    .btn-secondary:hover {
+      background: var(--apple-border);
+    }
+
+    .preview-box {
+      background: var(--apple-bg-secondary);
+      border-radius: var(--apple-radius);
+      padding: 16px;
+      margin-top: 16px;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all var(--transition-speed);
+    }
+
+    .multi-lang-container {
+      background: var(--apple-bg-secondary);
+      border-radius: var(--apple-radius);
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    .lang-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      margin: 4px;
+      border: 1px solid var(--apple-border);
+    }
+
+    .lang-tag button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--apple-text-secondary);
+      font-size: 14px;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .lang-tag button:hover {
+      color: #FF3B30;
+    }
+
+    .add-lang-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--apple-blue);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      border: none;
+      cursor: pointer;
+      margin: 4px;
+      transition: all var(--transition-speed);
+    }
+
+    .add-lang-btn:hover {
+      background: var(--apple-blue-hover);
+    }
+
+    .analytics-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: var(--apple-radius);
+      padding: 16px;
+      color: white;
+      margin-bottom: 16px;
+    }
+
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .analytics-stat {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: var(--apple-radius-sm);
+      padding: 12px;
+      text-align: center;
+    }
+
+    .analytics-stat-value {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .analytics-stat-label {
+      font-size: 11px;
+      opacity: 0.9;
+    }
+
+    .meeting-item {
+      background: var(--apple-bg-secondary);
+      border-radius: var(--apple-radius);
+      padding: 16px;
+      margin-bottom: 12px;
+      transition: all var(--transition-speed);
+    }
+
+    .meeting-item:hover {
+      box-shadow: var(--apple-shadow);
+    }
+
+    .meeting-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--apple-text);
+    }
+
+    .meeting-meta {
+      font-size: 12px;
+      color: var(--apple-text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .meeting-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ai-badge {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .provider-card {
+      border: 1px solid var(--apple-border);
+      border-radius: var(--apple-radius-sm);
+      padding: 12px;
+      margin-top: 8px;
+      transition: all var(--transition-speed);
+    }
+
+    .provider-card.selected {
+      border-color: var(--apple-blue);
+      background: rgba(0, 113, 227, 0.05);
+    }
+
+    .provider-name {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .provider-desc {
+      font-size: 11px;
+      color: var(--apple-text-secondary);
+    }
+
+    .api-key-input {
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .caption-overlay-preview {
+      background: #131314;
+      border-radius: var(--apple-radius);
+      padding: 16px;
+      margin-top: 12px;
+      color: white;
+      font-family: inherit;
+    }
+
+    .footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--apple-border);
+      text-align: center;
+      font-size: 12px;
+      color: var(--apple-text-secondary);
+    }
+
+    .footer a {
+      color: var(--apple-blue);
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--apple-text-secondary);
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #34C759;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .live-indicator::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: white;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Scrollbar styling */
+    .content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .content::-webkit-scrollbar-track {
+      background: var(--apple-bg-secondary);
+      border-radius: 4px;
+    }
+
+    .content::-webkit-scrollbar-thumb {
+      background: var(--apple-border);
+      border-radius: 4px;
+    }
+
+    .content::-webkit-scrollbar-thumb:hover {
+      background: #A1A1A6;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Meet Caption Translator</h1>
-
-    <!-- Top tabs removed per user request -->
-
-    <div id="settingsPage">
-    <div>
-      <label for="lang">Target Language:</label>
-      <select id="lang">
-        <option value="fa">Persian</option>
-        <option value="ar">Arabic</option>
-        <option value="en">English</option>
-        <option value="es">Spanish</option>
-        <option value="fr">French</option>
-        <option value="de">German</option>
-        <option value="it">Italian</option>
-        <option value="ja">Japanese</option>
-        <option value="ko">Korean</option>
-        <option value="pt">Portuguese</option>
-        <option value="ru">Russian</option>
-        <option value="zh-CN">Chinese (Simplified)</option>
-      </select>
-
-      <!-- Quick Select removed per user request -->
-
-      <label for="provider">Translation Provider:</label>
-      <select id="provider">
-        <option value="google">Google (translate.googleapis.com)</option>
-        <option value="libre">LibreTranslate (Argos OpenTech)</option>
-        <option value="libre-de">LibreTranslate (libretranslate.de)</option>
-        <option value="mymemory">MyMemory (mymemory.translated.net)</option>
-      </select>
-
-      <label for="providerApiKey" id="providerApiKeyLabel" style="display:none">API Key (optional):</label>
-      <input type="text" id="providerApiKey" placeholder="API key (if required)" style="display:none">
-
-      <label for="fontStack">Font Stack:</label>
-  <input type="text" id="fontStack" value="'Vazirmatn', 'Roboto', 'Arial', sans-serif">
-
-  <label for="fontSize">Font Size (px):</label>
-  <input type="number" id="fontSize" value="23" min="10" max="60">
-
-      <label for="color">Text Color:</label>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <input type="color" id="color" value="#ffffff" style="width:32px; height:32px; border-radius:50%; border:1px solid #0F0; background:transparent; padding:0;">
-        <input type="text" id="colorCode" value="#ffffff" maxlength="7" style="width:80px; font-family:monospace;">
-      </div>
-
-      <label for="lineHeight">Line Height:</label>
-  <input type="number" id="lineHeight" value="1.7" step="0.1" min="1" max="3.0">
-
-      <label for="displayMode">Display Mode:</label>
-      <select id="displayMode">
-        <option value="integrated">Integrated (replace captions)</option>
-        <option value="popup">Popup (floating translated box)</option>
-      </select>
-
-  <label style="margin-top:8px; display:block;">Advanced behavior:</label>
-  <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enableReconcile"> Enable reconciliation of edited captions</label>
-  <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enablePrune"> Auto-prune old inline translations to limit DOM growth</label>
-  <label style="display:flex; align-items:center; gap:8px;">Debounce ms: <input type="number" id="debounceMs" value="280" style="width:80px; margin-left:6px;"></label>
-  <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="showIndicator"> Show finalized/in-progress visual indicator</label>
-  <label style="display:flex; align-items:center; gap:8px; margin-top:6px;">Prune threshold (sentences kept in DOM): <input type="number" id="pruneThreshold" value="20" style="width:80px; margin-left:6px;"></label>
-  <label style="display:flex; align-items:center; gap:8px;">Reconciliation window (sentences): <input type="number" id="reconcileWindow" value="3" style="width:80px; margin-left:6px;"></label>
-  <label style="display:flex; align-items:center; gap:8px;">Max words per translate request: <input type="number" id="maxWords" value="30" style="width:80px; margin-left:6px;"></label>
-
-  <!-- V5 & V6 Enhanced Features -->
-  <div style="margin-top:12px; padding:8px; border:1px dashed #0F0; border-radius:4px;">
-    <label style="display:block; margin-bottom:6px; color:#0F0; font-weight:bold;">✨ V5 Enhanced Features:</label>
-    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enableCaching"> Enable translation caching (40-60% faster)</label>
-    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enableBilingual"> Bilingual display (show original + translated)</label>
-    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enableFocusMode" checked> Focus mode (highlight new translations)</label>
-    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enableAutoHideOriginal"> Auto-hide original text (hover to reveal)</label>
-    <label style="display:flex; align-items:center; gap:8px; margin-top:6px;">Cache max size: <input type="number" id="cacheMaxSize" value="500" min="100" max="2000" style="width:70px; margin-left:6px;"></label>
-    <label style="display:flex; align-items:center; gap:8px;">Transition duration (ms): <input type="number" id="transitionDuration" value="100" min="80" max="300" style="width:70px; margin-left:6px;"></label>
-    
-    <label style="display:block; margin:10px 0 6px 0; color:#0F0; font-weight:bold;">🚀 V6 Next-Level Features:</label>
-    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enableProgressiveTranslation"> Progressive translation (word-by-word fade-in)</label>
-    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enablePerSpeakerColors"> Per-speaker color coding</label>
-    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enableContextWindow"> Context window (keep last sentences for better accuracy)</label>
-    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enableSmartBatching"> Smart batching (group sentences based on speaking speed)</label>
-    <label style="display:flex; align-items:center; gap:8px; margin-top:6px;">Context window size: <input type="number" id="contextWindowSize" value="3" min="1" max="10" style="width:70px; margin-left:6px;"></label>
-    <label style="display:flex; align-items:center; gap:8px;">Max batch size: <input type="number" id="maxBatchSize" value="5" min="1" max="10" style="width:70px; margin-left:6px;"></label>
-    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="enableStatistics"> Show statistics (translations, cache hits, latency)</label>
+  <div class="header">
+    <h1>🎯 Meetranslator</h1>
+    <p>AI-Powered Live Caption Translation</p>
   </div>
 
-  <div id="popupControls" style="margin-top:8px; display:none;">
-        <label for="popupPosition">Popup Position:</label>
-        <select id="popupPosition">
-          <option value="top-left">Top Left</option>
-          <option value="top-center">Top Center</option>
-          <option value="top-right">Top Right</option>
-          <option value="center">Center</option>
-          <option value="bottom-left">Bottom Left</option>
-          <option value="bottom-right">Bottom Right</option>
-          <option value="custom">Custom (px offsets)</option>
-        </select>
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="settings">Settings</button>
+    <button class="tab-btn" data-tab="languages">Languages</button>
+    <button class="tab-btn" data-tab="overlay">Caption Overlay</button>
+    <button class="tab-btn" data-tab="analytics">Analytics</button>
+    <button class="tab-btn" data-tab="archive">Archive</button>
+  </div>
 
-        <div id="popupOffsetRow" style="display:none; margin-top:6px; gap:6px; display:flex;">
-          <label style="display:flex; align-items:center; gap:6px;">Offset X: <input type="number" id="popupOffsetX" value="20" style="width:80px; margin-left:6px;"></label>
-          <label style="display:flex; align-items:center; gap:6px;">Offset Y: <input type="number" id="popupOffsetY" value="20" style="width:80px; margin-left:6px;"></label>
+  <div class="content">
+    <!-- Settings Page -->
+    <div id="settingsPage" class="page active">
+      <div class="section">
+        <div class="section-title"><span class="icon">🌐</span> Translation</div>
+        
+        <div class="setting-row">
+          <div class="setting-label">
+            Source Language
+            <small>Detect automatically or choose manually</small>
+          </div>
+          <div class="setting-control">
+            <select id="sourceLang">
+              <option value="auto">Auto Detect</option>
+              <option value="en">English</option>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+              <option value="de">German</option>
+              <option value="it">Italian</option>
+              <option value="pt">Portuguese</option>
+              <option value="ru">Russian</option>
+              <option value="ja">Japanese</option>
+              <option value="ko">Korean</option>
+              <option value="zh-CN">Chinese (Simplified)</option>
+              <option value="zh-TW">Chinese (Traditional)</option>
+              <option value="ar">Arabic</option>
+              <option value="hi">Hindi</option>
+              <option value="fa">Persian</option>
+              <option value="tr">Turkish</option>
+              <option value="nl">Dutch</option>
+              <option value="pl">Polish</option>
+              <option value="sv">Swedish</option>
+              <option value="da">Danish</option>
+              <option value="fi">Finnish</option>
+              <option value="no">Norwegian</option>
+            </select>
+          </div>
         </div>
 
-        <label for="popupBgColor">Popup Background:</label>
-        <div style="display:flex; align-items:center; gap:8px;">
-          <input type="color" id="popupBgColor" value="#131314" style="width:32px; height:32px; border-radius:50%;">
-          <input type="text" id="popupBgColorCode" value="#131314" maxlength="7" style="width:90px; font-family:monospace;">
+        <div class="setting-row">
+          <div class="setting-label">
+            Primary Target Language
+            <small>Main language for translation</small>
+          </div>
+          <div class="setting-control">
+            <select id="targetLang">
+              <option value="fa">Persian</option>
+              <option value="ar">Arabic</option>
+              <option value="en">English</option>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+              <option value="de">German</option>
+              <option value="it">Italian</option>
+              <option value="ja">Japanese</option>
+              <option value="ko">Korean</option>
+              <option value="pt">Portuguese</option>
+              <option value="ru">Russian</option>
+              <option value="zh-CN">Chinese (Simplified)</option>
+              <option value="zh-TW">Chinese (Traditional)</option>
+              <option value="hi">Hindi</option>
+              <option value="tr">Turkish</option>
+              <option value="nl">Dutch</option>
+              <option value="pl">Polish</option>
+            </select>
+          </div>
         </div>
 
-        <label for="popupTextColor">Popup Text Color:</label>
-        <div style="display:flex; align-items:center; gap:8px;">
-          <input type="color" id="popupTextColor" value="#ffffff" style="width:32px; height:32px; border-radius:50%;">
-          <input type="text" id="popupTextColorCode" value="#ffffff" maxlength="7" style="width:90px; font-family:monospace;">
+        <div class="setting-row">
+          <div class="setting-label">
+            Translation Provider
+            <small>Choose your preferred service</small>
+          </div>
+          <div class="setting-control">
+            <select id="provider">
+              <option value="google">Google Translate</option>
+              <option value="deepl">DeepL (Free Tier)</option>
+              <option value="libre">LibreTranslate (Open Source)</option>
+              <option value="mymemory">MyMemory</option>
+            </select>
+          </div>
         </div>
 
-        <label style="display:flex; align-items:center; gap:8px; margin-top:8px;">Popup Width:</label>
-        <div style="display:flex; gap:8px; align-items:center;">
-          <input type="number" id="popupWidthValue" value="20" min="8" max="100" style="width:80px;">
-          <select id="popupWidthUnit">
-            <option value="vw">vw (viewport width)</option>
-            <option value="px">px</option>
-            <option value="%">% (percent of container)</option>
-          </select>
-          <span style="opacity:0.8; font-size:0.9em;">(Width will be set from this value)</span>
+        <div id="apiKeySection" class="provider-card" style="display:none;">
+          <div class="provider-name">API Key Configuration</div>
+          <div class="provider-desc">Enter your API key for enhanced translation quality</div>
+          <input type="text" id="providerApiKey" class="api-key-input" placeholder="Enter API key (optional)">
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="icon">🎨</span> Appearance</div>
+        
+        <div class="setting-row">
+          <div class="setting-label">
+            Font Size
+            <small>Adjust caption text size (10-60px)</small>
+          </div>
+          <div class="setting-control">
+            <input type="number" id="fontSize" value="23" min="10" max="60" style="width: 70px;">
+          </div>
         </div>
 
-        <label style="display:flex; align-items:center; gap:8px; margin-top:8px;">Popup Height:</label>
-        <div style="display:flex; gap:8px; align-items:center;">
-          <input type="number" id="popupHeightValue" value="60" min="8" max="100" style="width:80px;">
-          <select id="popupHeightUnit">
-            <option value="vw">vw (viewport width)</option>
-            <option value="px">px</option>
-            <option value="%">% (percent of container)</option>
-          </select>
-          <span style="opacity:0.8; font-size:0.9em;">(Height will be set from this value)</span>
+        <div class="setting-row">
+          <div class="setting-label">
+            Text Color
+            <small>Choose caption text color</small>
+          </div>
+          <div class="setting-control">
+            <input type="color" id="color" value="#ffffff">
+            <input type="text" id="colorCode" value="#ffffff" maxlength="7" style="width: 80px; font-family: monospace;">
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            Line Height
+            <small>Spacing between lines (1.0-3.0)</small>
+          </div>
+          <div class="setting-control">
+            <input type="number" id="lineHeight" value="1.7" step="0.1" min="1" max="3.0" style="width: 70px;">
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            Display Mode
+            <small>How translations appear</small>
+          </div>
+          <div class="setting-control">
+            <select id="displayMode">
+              <option value="popup">Floating Popup (Chrome-like)</option>
+              <option value="integrated">Integrated (Replace captions)</option>
+              <option value="dual">Dual (Show both)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="icon">⚡</span> Advanced Features</div>
+        
+        <div class="setting-row">
+          <div class="setting-label">
+            Translation Caching
+            <small>Store translations for 40-60% faster performance</small>
+          </div>
+          <div class="setting-control">
+            <input type="checkbox" id="enableCaching" class="toggle-switch" checked>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            Bilingual Display
+            <small>Show both source and translated text</small>
+          </div>
+          <div class="setting-control">
+            <input type="checkbox" id="enableBilingual" class="toggle-switch">
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            AI Summarization
+            <small>Generate meeting summaries (Free)</small>
+          </div>
+          <div class="setting-control">
+            <input type="checkbox" id="enableAISummary" class="toggle-switch">
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            Sentiment Analysis
+            <small>Analyze conversation tone (Free)</small>
+          </div>
+          <div class="setting-control">
+            <input type="checkbox" id="enableSentiment" class="toggle-switch">
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            Per-Speaker Colors
+            <small>Color-code different speakers</small>
+          </div>
+          <div class="setting-control">
+            <input type="checkbox" id="enablePerSpeakerColors" class="toggle-switch" checked>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            Context Window
+            <small>Use previous sentences for better accuracy</small>
+          </div>
+          <div class="setting-control">
+            <input type="checkbox" id="enableContextWindow" class="toggle-switch" checked>
+          </div>
+        </div>
+      </div>
+
+      <button id="save" class="btn-primary">Apply Settings</button>
+
+      <div class="preview-box" id="preview">
+        <span class="mt-translated">Hello! This is a preview of your caption settings.</span>
+      </div>
+    </div>
+
+    <!-- Languages Page -->
+    <div id="languagesPage" class="page">
+      <div class="section">
+        <div class="section-title"><span class="icon">🗣️</span> Multi-Language Support</div>
+        <p style="font-size: 13px; color: var(--apple-text-secondary); margin-bottom: 16px;">
+          Translate to multiple languages simultaneously. Perfect for international meetings.
+        </p>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            Enable Multi-Language
+            <small>Output captions in multiple languages</small>
+          </div>
+          <div class="setting-control">
+            <input type="checkbox" id="enableMultiLang" class="toggle-switch">
+          </div>
+        </div>
+
+        <div id="multiLangContainer" class="multi-lang-container" style="display: none;">
+          <div style="font-size: 13px; font-weight: 600; margin-bottom: 8px;">Selected Languages:</div>
+          <div id="selectedLangs"></div>
+          
+          <div style="margin-top: 12px; display: flex; gap: 8px; align-items: center;">
+            <select id="addLangSelect" style="flex: 1;">
+              <option value="">Add language...</option>
+              <option value="en">English</option>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+              <option value="de">German</option>
+              <option value="it">Italian</option>
+              <option value="pt">Portuguese</option>
+              <option value="ru">Russian</option>
+              <option value="ja">Japanese</option>
+              <option value="ko">Korean</option>
+              <option value="zh-CN">Chinese (Simplified)</option>
+              <option value="ar">Arabic</option>
+              <option value="hi">Hindi</option>
+              <option value="fa">Persian</option>
+            </select>
+            <button id="addLangBtn" class="add-lang-btn">+ Add</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="icon">📝</span> Dual Transcription</div>
+        
+        <div class="setting-row">
+          <div class="setting-label">
+            Show Source Captions
+            <small>Display original Google Meet captions</small>
+          </div>
+          <div class="setting-control">
+            <input type="checkbox" id="showSourceCaptions" class="toggle-switch" checked>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            Show Translated Captions
+            <small>Display translated captions alongside</small>
+          </div>
+          <div class="setting-control">
+            <input type="checkbox" id="showTranslatedCaptions" class="toggle-switch" checked>
+          </div>
         </div>
       </div>
     </div>
 
-    </div>
-    <div class="preview-section" id="preview">
-      <span class="mt-translated">سلام دنیا</span>
-    </div>
+    <!-- Caption Overlay Page -->
+    <div id="overlayPage" class="page">
+      <div class="live-indicator">Live Preview</div>
+      
+      <div class="section">
+        <div class="section-title"><span class="icon">🎬</span> Caption Overlay Settings</div>
+        <p style="font-size: 13px; color: var(--apple-text-secondary); margin-bottom: 16px;">
+          Customize the floating caption popup - Chrome Live Caption style with full control.
+        </p>
 
-    <button id="save">Save Settings</button>
+        <div class="setting-row">
+          <div class="setting-label">
+            Popup Position
+            <small>Where the caption box appears</small>
+          </div>
+          <div class="setting-control">
+            <select id="popupPosition">
+              <option value="top-left">Top Left</option>
+              <option value="top-center">Top Center</option>
+              <option value="top-right">Top Right</option>
+              <option value="center">Center</option>
+              <option value="bottom-left">Bottom Left</option>
+              <option value="bottom-right">Bottom Right</option>
+              <option value="custom">Custom Position</option>
+            </select>
+          </div>
+        </div>
 
-    </div>
+        <div id="customPositionRow" class="setting-row" style="display: none;">
+          <div class="setting-label">
+            Custom Offsets
+            <small>X and Y offset in pixels</small>
+          </div>
+          <div class="setting-control" style="gap: 6px;">
+            <input type="number" id="popupOffsetX" value="20" min="0" max="500" placeholder="X" style="width: 70px;">
+            <input type="number" id="popupOffsetY" value="20" min="0" max="500" placeholder="Y" style="width: 70px;">
+          </div>
+        </div>
 
-    <div id="downloadsPage" style="display:none;">
-      <h2>Downloads</h2>
-      <p class="download-info">Transcripts will be downloaded as files.</p>
-      <div class="saved-meetings-section">
-        <ul id="savedMeetingsListDownloads"></ul>
+        <div class="setting-row">
+          <div class="setting-label">
+            Background Color
+            <small>Caption box background</small>
+          </div>
+          <div class="setting-control">
+            <input type="color" id="popupBgColor" value="#131314">
+            <input type="text" id="popupBgColorCode" value="#131314" maxlength="7" style="width: 80px; font-family: monospace;">
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            Text Color
+            <small>Caption text color</small>
+          </div>
+          <div class="setting-control">
+            <input type="color" id="popupTextColor" value="#ffffff">
+            <input type="text" id="popupTextColorCode" value="#ffffff" maxlength="7" style="width: 80px; font-family: monospace;">
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            Popup Width
+            <small>Width of the caption box</small>
+          </div>
+          <div class="setting-control" style="gap: 6px;">
+            <input type="number" id="popupWidthValue" value="25" min="8" max="100" style="width: 70px;">
+            <select id="popupWidthUnit" style="width: 80px;">
+              <option value="vw">vw</option>
+              <option value="px">px</option>
+              <option value="%">%</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            Popup Height
+            <small>Height of the caption box</small>
+          </div>
+          <div class="setting-control" style="gap: 6px;">
+            <input type="number" id="popupHeightValue" value="40" min="8" max="100" style="width: 70px;">
+            <select id="popupHeightUnit" style="width: 80px;">
+              <option value="vh">vh</option>
+              <option value="px">px</option>
+              <option value="%">%</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            Draggable Popup
+            <small>Allow dragging to reposition</small>
+          </div>
+          <div class="setting-control">
+            <input type="checkbox" id="enableDraggable" class="toggle-switch" checked>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            Persist Across Tabs
+            <small>Keep popup when switching browser tabs</small>
+          </div>
+          <div class="setting-control">
+            <input type="checkbox" id="persistAcrossTabs" class="toggle-switch" checked>
+          </div>
+        </div>
+      </div>
+
+      <div class="caption-overlay-preview" id="captionPreview">
+        <div style="font-size: 14px; line-height: 1.6;">
+          This is how your captions will appear. You can resize and drag this box during meetings.
+        </div>
       </div>
     </div>
 
-    <div class="footer">
-      <a href="https://github.com/proalit" target="_blank">ProAlit On GitHub</a>
+    <!-- Analytics Page -->
+    <div id="analyticsPage" class="page">
+      <div class="section">
+        <div class="section-title"><span class="icon">📊</span> Meeting Analytics Dashboard</div>
+        
+        <div class="analytics-card">
+          <div style="font-size: 14px; opacity: 0.9; margin-bottom: 8px;">Current Session</div>
+          <div class="analytics-grid">
+            <div class="analytics-stat">
+              <div class="analytics-stat-value" id="statTranslations">0</div>
+              <div class="analytics-stat-label">Translations</div>
+            </div>
+            <div class="analytics-stat">
+              <div class="analytics-stat-value" id="statCacheHits">0</div>
+              <div class="analytics-stat-label">Cache Hits</div>
+            </div>
+            <div class="analytics-stat">
+              <div class="analytics-stat-value" id="statAvgLatency">0ms</div>
+              <div class="analytics-stat-label">Avg Latency</div>
+            </div>
+            <div class="analytics-stat">
+              <div class="analytics-stat-value" id="statWords">0</div>
+              <div class="analytics-stat-label">Words Translated</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            Show Live Statistics
+            <small>Display real-time stats overlay</small>
+          </div>
+          <div class="setting-control">
+            <input type="checkbox" id="enableStatistics" class="toggle-switch" checked>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            Export Analytics
+            <small>Download meeting analytics as CSV</small>
+          </div>
+          <div class="setting-control">
+            <button id="exportAnalytics" class="btn-secondary">Export</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="icon">🤖</span> AI Insights</div>
+        
+        <div class="setting-row">
+          <div class="setting-label">
+            Auto-Summarize Meetings
+            <small>Generate summary at end of meeting</small>
+          </div>
+          <div class="setting-control">
+            <input type="checkbox" id="autoSummarize" class="toggle-switch">
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            Track Sentiment
+            <small>Analyze conversation sentiment over time</small>
+          </div>
+          <div class="setting-control">
+            <input type="checkbox" id="trackSentiment" class="toggle-switch">
+          </div>
+        </div>
+
+        <button id="generateSummary" class="btn-secondary" style="width: 100%; margin-top: 12px;">
+          Generate Meeting Summary Now
+        </button>
+      </div>
+    </div>
+
+    <!-- Archive Page -->
+    <div id="archivePage" class="page">
+      <div class="section">
+        <div class="section-title"><span class="icon">📁</span> Meeting Archive</div>
+        <p style="font-size: 13px; color: var(--apple-text-secondary); margin-bottom: 16px;">
+          All your saved meeting transcripts are stored here. Download or manage them anytime.
+        </p>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            Auto-Save Transcripts
+            <small>Automatically save all meeting captions</small>
+          </div>
+          <div class="setting-control">
+            <input type="checkbox" id="autoSaveTranscripts" class="toggle-switch" checked>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            Storage Used
+            <small id="storageUsed">Calculating...</small>
+          </div>
+          <div class="setting-control">
+            <button id="clearOldMeetings" class="btn-secondary">Clear Old</button>
+          </div>
+        </div>
+
+        <div id="savedMeetingsList" style="margin-top: 16px;">
+          <!-- Meetings will be populated here -->
+        </div>
+
+        <div id="emptyArchiveState" class="empty-state" style="display: none;">
+          <div class="empty-state-icon">📭</div>
+          <div>No saved meetings yet</div>
+          <div style="font-size: 12px; margin-top: 8px;">Transcripts will appear here after your meetings</div>
+        </div>
+      </div>
     </div>
   </div>
+
+  <div class="footer">
+    <a href="https://github.com/proalit" target="_blank">ProAlit on GitHub</a> • v2.0.0
+  </div>
+
   <script src="popup.js"></script>
 </body>
 </html>
