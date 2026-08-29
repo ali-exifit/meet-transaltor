@@ -1,51 +1,49 @@
-```
+# Compiled and build artifacts
+*.pyc
+__pycache__/
+*.o
+*.obj
+dist/
+build/
+*.class
+*.exe
+*.dll
+*.so
+*.a
+*.out
+
 # Dependencies
+.venv/
+venv/
 node_modules/
+.mypy_cache/
+.pytest_cache/
+target/
+.gradle/
 
 # Logs and temp files
 *.log
 *.tmp
 *.swp
+*.swo
 
 # Environment
 .env
 .env.local
-.env.*
+*.env.*
 
 # Editors
 .vscode/
 .idea/
 
-# Build artifacts
-dist/
-build/
-target/
+# System files
+.DS_Store
+Thumbs.db
+coverage/
+htmlcov/
+.coverage
 
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Java
-*.class
-*.jar
-*.war
-*.ear
-*.nar
-target/
-
-# C/C++
-*.o
-*.obj
-*.a
-*.lib
-*.so
-*.dll
-*.dylib
-*.exe
-
-# Compression
+# Compressed files
 *.zip
 *.gz
 *.tar
@@ -64,226 +62,7 @@ target/
 *.Z
 *.lz
 *.lzo
-
-# Coverage
-coverage/
-htmlcov/
-.coverage
-
-# Testing
-.pytest_cache/
-.mypy_cache/
-.nyc_output/
-coverage/
-
-# OS generated
-.DS_Store
-Thumbs.db
-
-# Gradle
-.gradle/
-
-# Go
-*.a
-*.o
-*.so
-*.exe
-*.dll
-*.dylib
-*.test
-*.prof
-cover.out
-coverage.out
-
-# Rust
-Cargo.lock
-target/
-
-# Ruby
-*.gem
-*.rbc
-.bundle/
-vendor/bundle/
-Gemfile.lock
-
-# Node.js
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# PHP
-*.phar
-vendor/
-
-# .NET
-*.sln
-*.csproj
-*.vbproj
-*.user
-*.userosscache
-*.suo
-bin/
-obj/
-out/
-
-# Android
-*.apk
-*.aar
-*.dex
-app/build/
-
-# Xcode
-*.xcodeproj/
-*.xcworkspace/
-*.pbxuser
-*.mode1v3
-*.perspectivev3
-*.xcuserstate
-*.xccheckout
-
-# Visual Studio
-*.sln
-*.vcxproj
-*.vcxproj.filters
-*.user
-*.suo
-*.sdf
-*.opensdf
-*.userosscache
-*.vc.db
-*.VC.VC.opendb
-ipch/
-obj/
-Bin/
-Obj/
-
-# Qt Creator
-*.pro.user
-*.pro.user.*
-*.qbs.user
-*.qbs.user.*
-*.moc
-*.moc.cpp
-*.qm
-*.prl
-*.pri
-*.pcl
-*.pcv
-*.pcv.bak
-*.mixin
-*.mixin.bak
-*.qmlproject.user
-*.qmlproject.user.*
-*.moc.qml
-*.moc.qml.cpp
-*.jsc.qml
-*.jsc.qml.cpp
-*.tsql
-*.tsql.cpp
-*.tsql.h
-*.tsql.ui
-*.tsql.qrc
-*.tsql.res
-*.tsql.rc
-*.tsql.rc2
-*.tsql.def
-*.tsql.exp
-*.tsql.lib
-*.tsql.dll
-*.tsql.exe
-*.tsql.so
-*.tsql.a
-*.tsql.o
-*.tsql.obj
-*.tsql.pdb
-*.tsql.ilk
-*.tsql.idb
-*.tsql.ncb
-*.tsql.sdf
-*.tsql.opensdf
-*.tsql.userosscache
-*.tsql.suo
-*.tsql.user
-*.tsql.vcproj
-*.tsql.vcxproj
-*.tsql.vcxproj.filters
-*.tsql.userosscache
-*.tsql.user
-*.tsql.sln
-*.tsql.suo
-*.tsql.userosscache
-*.tsql.sdf
-*.tsql.opensdf
-*.tsql.userosscache
-*.tsql.suo
-*.tsql.user
-*.tsql.vcproj
-*.tsql.vcxproj
-*.tsql.vcxproj.filters
-*.tsql.userosscache
-*.tsql.user
-*.tsql.sln
-*.tsql.suo
-*.tsql.userosscache
-*.tsql.sdf
-*.tsql.opensdf
-*.tsql.userosscache
-*.tsql.suo
-*.tsql.user
-*.tsql.vcproj
-*.tsql.vcxproj
-*.tsql.vcxproj.filters
-*.tsql.userosscache
-*.tsql.user
-*.tsql.sln
-*.tsql.suo
-*.tsql.userosscache
-*.tsql.sdf
-*.tsql.opensdf
-*.tsql.userosscache
-*.tsql.suo
-*.tsql.user
-*.tsql.vcproj
-*.tsql.vcxproj
-*.tsql.vcxproj.filters
-*.tsql.userosscache
-*.tsql.user
-*.tsql.sln
-*.tsql.suo
-*.tsql.userosscache
-*.tsql.sdf
-*.tsql.opensdf
-*.tsql.userosscache
-*.tsql.suo
-*.tsql.user
-*.tsql.vcproj
-*.tsql.vcxproj
-*.tsql.vcxproj.filters
-*.tsql.userosscache
-*.tsql.user
-*.tsql.sln
-*.tsql.suo
-*.tsql.userosscache
-*.tsql.sdf
-*.tsql.opensdf
-*.tsql.userosscache
-*.tsql.suo
-*.tsql.user
-*.tsql.vcproj
-*.tsql.vcxproj
-*.tsql.vcxproj.filters
-*.tsql.userosscache
-*.tsql.user
-*.tsql.sln
-*.tsql.suo
-*.tsql.userosscache
-*.tsql.sdf
-*.tsql.opensdf
-*.tsql.userosscache
-*.tsql.suo
-*.tsql.user
-*.tsql.vcproj
-*.tsql.vcxproj
-*.tsql.vcxproj.filters
-*.tsql......
-```
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst

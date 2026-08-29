@@ -31,7 +31,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["contentScript.js"],
+      "js": ["floatingCaption.js", "contentScript.js"],
       "run_at": "document_end",
       "css": ["styles.css"]
     }

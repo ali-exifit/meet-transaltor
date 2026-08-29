@@ -229,5 +229,92 @@ async function loadSavedMeetingsDownloads() {
   });
 }
 
+// Tab switching functionality
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tabId = btn.dataset.tab;
+    
+    // Update active tab button
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    // Show corresponding page
+    document.querySelectorAll('.page').forEach(page => {
+      page.classList.remove('active');
+    });
+    const targetPage = document.getElementById(`${tabId}Page`);
+    if (targetPage) {
+      targetPage.classList.add('active');
+      
+      // Load specific page data if needed
+      if (tabId === 'archive') {
+        loadSavedMeetings();
+      } else if (tabId === 'analytics') {
+        loadAnalytics();
+      }
+    }
+  });
+});
+
+async function loadAnalytics() {
+  const { mtSettings = {} } = await chrome.storage.local.get('mtSettings');
+  const stats = mtSettings.stats || {};
+  
+  const totalTranslationsEl = document.getElementById('totalTranslations');
+  const cacheHitsEl = document.getElementById('cacheHits');
+  const avgLatencyEl = document.getElementById('avgLatency');
+  const wordsTranslatedEl = document.getElementById('wordsTranslated');
+  
+  if (totalTranslationsEl) totalTranslationsEl.textContent = stats.translations || 0;
+  if (cacheHitsEl) cacheHitsEl.textContent = stats.cacheHits || 0;
+  if (avgLatencyEl) avgLatencyEl.textContent = `${stats.avgLatency || 0}ms`;
+  if (wordsTranslatedEl) wordsTranslatedEl.textContent = stats.words || 0;
+}
+
+async function loadSavedMeetings() {
+  const { transcripts = {} } = await chrome.storage.local.get('transcripts');
+  const savedMeetingsList = document.getElementById('savedMeetingsList');
+  if (!savedMeetingsList) return;
+  
+  savedMeetingsList.innerHTML = '';
+  
+  if (Object.keys(transcripts).length === 0) {
+    savedMeetingsList.innerHTML = '<li style="padding: 20px; text-align: center; color: var(--apple-text-secondary);">No saved meetings yet.</li>';
+    return;
+  }
+  
+  for (const key in transcripts) {
+    const meeting = transcripts[key];
+    const listItem = document.createElement('li');
+    listItem.style.cssText = 'padding: 12px; background: var(--apple-bg-secondary); border-radius: 8px; margin-bottom: 8px;';
+    
+    const meetingTitle = meeting.title || `Meeting ${new Date(meeting.createdAt).toLocaleString()}`;
+    const itemCount = meeting.items ? meeting.items.length : 0;
+    
+    listItem.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <strong style="font-size: 14px;">${meetingTitle}</strong>
+        <span style="font-size: 11px; color: var(--apple-text-secondary);">${itemCount} captions</span>
+      </div>
+      <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+        <button data-key="${key}" data-type="original" class="download-meeting-btn" style="flex: 1; padding: 6px 12px; font-size: 11px;">Original</button>
+        <button data-key="${key}" data-type="translated" class="download-meeting-btn" style="flex: 1; padding: 6px 12px; font-size: 11px;">Translated</button>
+        <button data-key="${key}" data-type="csv" class="download-meeting-btn" style="flex: 1; padding: 6px 12px; font-size: 11px;">CSV</button>
+        <button data-key="${key}" data-type="json" class="download-meeting-btn" style="flex: 1; padding: 6px 12px; font-size: 11px;">JSON</button>
+      </div>
+    `;
+    savedMeetingsList.appendChild(listItem);
+  }
+  
+  savedMeetingsList.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('download-meeting-btn')) {
+      const key = e.target.dataset.key;
+      const type = e.target.dataset.type;
+      await chrome.runtime.sendMessage({ type: 'DOWNLOAD_SPECIFIC_MEETING', meetingKey: key, downloadType: type });
+    }
+  });
+}
+
 load();
+loadAnalytics();
 loadSavedMeetings();
