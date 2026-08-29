@@ -546,14 +546,19 @@ function applyPopupStyles(){
 }
 
 function updatePopupText(translated, original, nameHTML){
+  // Send to floating caption instead of using old popup
+  if (window.floatingCaption) {
+    const speaker = nameHTML ? nameHTML.replace(/<[^>]*>/g, '').trim() : '';
+    window.floatingCaption.addCaption(translated || original || '', speaker, true);
+  }
+  
+  // Also keep the old popupBox for backward compatibility
   ensurePopupBox();
   const textContainer = popupBox.querySelector('.mt-popup-text');
   if (!textContainer) return;
-  // Update text instantly
   textContainer.textContent = translated || original || '';
   applyPopupStyles();
   popupBox.style.opacity = '1';
-  // Popup will persist and not auto-remove
 }
 
 function applyVars(container){
