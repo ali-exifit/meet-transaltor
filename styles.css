@@ -1,34 +1,31 @@
-/* styles.css — V6 ULTRA ENHANCED */
-/* Scoped styling for caption enhancements with Google-like smooth transitions (80-120ms) */
-/* Fixed: auto-hide original with hover reveal working correctly */
+/* styles.css — V2.0 Apple-Inspired Design */
+/* Scoped styling for caption enhancements with smooth transitions */
 
 .mt-enhanced-captions, .mt-enhanced-captions * {
-  font-family: var(--mt-font-stack, 'Vazirmatn', 'Roboto', 'Arial', sans-serif) !important;
+  font-family: var(--mt-font-stack, -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Roboto', 'Arial', sans-serif) !important;
 }
 
 .mt-translated { 
   display: inline-block; 
-  transition: opacity var(--mt-transition-duration, 100ms) ease, transform 80ms ease;
+  transition: opacity 150ms ease, transform 100ms ease;
 }
 
-/* Finalized / in-progress containers for smoother updates */
+/* Wrapper containers */
 .mt-translation-wrapper { display: inline; }
 .mt-finalized { display: inline; }
 
-/* Enhanced sentence-level transitions with configurable duration via CSS variable - Google-like 100ms */
+/* Sentence-level transitions */
 .mt-finalized-sentence { 
   display: inline; 
   opacity: 1; 
-  transition: opacity var(--mt-transition-duration, 100ms) ease, 
-              background-color var(--mt-transition-duration, 100ms) ease,
-              border-color var(--mt-transition-duration, 100ms) ease;
-  border-radius: 2px;
-  padding: 0 1px;
+  transition: opacity 100ms ease, background-color 100ms ease, border-color 100ms ease;
+  border-radius: 4px;
+  padding: 0 2px;
 }
 
-/* Focus mode: subtle highlight for newly translated sentences - Google-style */
+/* Focus mode highlight */
 .mt-finalized-sentence.new {
-  background-color: rgba(66, 133, 244, 0.08); /* Google blue, very subtle */
+  background-color: rgba(66, 133, 244, 0.08);
   animation: mt-fade-highlight 1.2s ease-out forwards;
 }
 
@@ -40,27 +37,27 @@
 .mt-inprogress { 
   display: inline; 
   opacity: 0.75; 
-  transition: opacity var(--mt-transition-duration, 100ms) ease; 
+  transition: opacity 100ms ease; 
   font-style: normal; 
 }
 
-/* Confidence indicator colors - more subtle */
+/* Confidence indicators */
 .mt-confidence-high {
-  border-left: 2px solid #34A853; /* Google green */
+  border-left: 2px solid #34C759;
   padding-left: 4px;
 }
 
 .mt-confidence-medium {
-  border-left: 2px solid #FBBC05; /* Google yellow */
+  border-left: 2px solid #FF9500;
   padding-left: 4px;
 }
 
 .mt-confidence-low {
-  border-left: 2px solid #EA4335; /* Google red */
+  border-left: 2px solid #FF3B30;
   padding-left: 4px;
 }
 
-/* Small finalized/in-progress indicator */
+/* Indicator dot */
 .mt-indicator { 
   color: rgba(255,255,255,0.65); 
   margin-left: 6px;
@@ -69,14 +66,14 @@
   transition: opacity 100ms ease;
 }
 
-/* Bilingual display mode */
+/* Bilingual display */
 .mt-bilingual-original {
   display: block;
   opacity: 0.85;
   font-size: 0.95em;
   margin-bottom: 2px;
   color: inherit;
-  transition: opacity var(--mt-transition-duration, 100ms) ease;
+  transition: opacity 100ms ease;
 }
 
 .mt-bilingual-translated {
@@ -85,13 +82,12 @@
   margin-top: 1px;
 }
 
-/* Auto-hide original text - FIXED: now properly hides and reveals on hover */
+/* Auto-hide original text */
 .mt-autohide-original {
   opacity: 0 !important;
   max-height: 0;
   overflow: hidden;
-  transition: opacity var(--mt-transition-duration, 100ms) ease, 
-              max-height var(--mt-transition-duration, 100ms) ease;
+  transition: opacity 100ms ease, max-height 100ms ease;
   pointer-events: none;
 }
 
@@ -102,14 +98,14 @@
   pointer-events: auto;
 }
 
-/* Per-speaker color coding */
-.mt-speaker-color-1 { border-left: 3px solid #4285F4; padding-left: 4px; }
-.mt-speaker-color-2 { border-left: 3px solid #EA4335; padding-left: 4px; }
-.mt-speaker-color-3 { border-left: 3px solid #34A853; padding-left: 4px; }
-.mt-speaker-color-4 { border-left: 3px solid #FBBC05; padding-left: 4px; }
-.mt-speaker-color-5 { border-left: 3px solid #9C27B0; padding-left: 4px; }
+/* Per-speaker colors */
+.mt-speaker-color-1 { border-left: 3px solid #0071E3; padding-left: 4px; }
+.mt-speaker-color-2 { border-left: 3px solid #FF3B30; padding-left: 4px; }
+.mt-speaker-color-3 { border-left: 3px solid #34C759; padding-left: 4px; }
+.mt-speaker-color-4 { border-left: 3px solid #FF9500; padding-left: 4px; }
+.mt-speaker-color-5 { border-left: 3px solid #AF52DE; padding-left: 4px; }
 
-/* Progressive translation fade-in effect */
+/* Progressive translation effect */
 .mt-progressive-word {
   display: inline;
   opacity: 0;
@@ -121,75 +117,78 @@
   100% { opacity: 1; transform: translateY(0); }
 }
 
-/* Subtle styling for pruned sentences (if rehydrated) */
+/* Pruned sentences */
 .mt-finalized-sentence.pruned { 
   opacity: 0.6; 
   font-size: 0.95em; 
 }
 
-/* Preserve user profile images */
+/* Preserve profile images */
 .mt-enhanced-captions img {
   display: inline-block;
   margin-right: 8px;
   vertical-align: middle;
 }
 
-/* Popup translation box with Google-like smoothness */
+/* Floating popup box - Chrome Live Caption style */
 .mt-popup-box {
-  width: 20vw !important;
-  height: 20vw !important;
-  max-width: 320px !important;
-  max-height: 320px !important;
-  box-sizing: border-box;
-  overflow: auto;
-  transition: opacity var(--mt-transition-duration, 100ms) ease,
-              transform var(--mt-transition-duration, 100ms) ease;
+  position: fixed;
+  z-index: 2147483647;
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  word-break: break-word;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  white-space: pre-wrap;
   opacity: 1;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  transition: opacity 200ms ease, transform 200ms ease;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  cursor: move;
+  user-select: none;
 }
 
-/* Smooth transitions for all translated elements - Google timing */
-.mt-translated,
-.mt-popup-text {
-  transition: opacity var(--mt-transition-duration, 100ms) ease,
-              transform var(--mt-transition-duration, 100ms) ease;
-}
-
-/* RTL support for Persian/Arabic */
-[dir="rtl"] .mt-translated,
-[dir="rtl"] .mt-popup-text {
-  text-align: right;
-  direction: rtl;
-}
-
-/* Scrollbar styling for popup - minimal and clean */
 .mt-popup-box::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 
 .mt-popup-box::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 2px;
+  border-radius: 3px;
 }
 
 .mt-popup-box::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
-  border-radius: 2px;
+  border-radius: 3px;
 }
 
 .mt-popup-box::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.35);
 }
 
-/* Context window grouping visual cue */
+/* Popup text container */
+.mt-popup-text {
+  transition: opacity 100ms ease, transform 100ms ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Roboto', sans-serif;
+}
+
+/* RTL support */
+[dir="rtl"] .mt-translated,
+[dir="rtl"] .mt-popup-text {
+  text-align: right;
+  direction: rtl;
+}
+
+/* Context window grouping */
 .mt-context-group {
   border-left: 2px solid rgba(66, 133, 244, 0.3);
   padding-left: 6px;
   margin-left: 2px;
 }
 
-/* Statistics display overlay */
+/* Statistics overlay */
 .mt-stats-overlay {
   position: fixed;
   bottom: 10px;
@@ -197,9 +196,76 @@
   background: rgba(0, 0, 0, 0.7);
   color: white;
   padding: 8px 12px;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 11px;
   z-index: 2147483646;
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(4px);
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  pointer-events: none;
 }
 
+/* Dual popup layout */
+.mt-dual-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Source caption popup styling */
+.mt-source-popup {
+  background: rgba(30, 30, 30, 0.95) !important;
+  margin-bottom: 8px;
+}
+
+/* Smooth fade animations */
+@keyframes mt-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mt-fade-in {
+  animation: mt-fade-in 200ms ease-out forwards;
+}
+
+/* Loading indicator */
+.mt-loading {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: mt-spin 600ms linear infinite;
+}
+
+@keyframes mt-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Multi-language tags */
+.mt-lang-tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  margin-right: 4px;
+  text-transform: uppercase;
+}
+
+/* Sentiment indicators */
+.mt-sentiment-positive {
+  border-left: 3px solid #34C759;
+  padding-left: 4px;
+}
+
+.mt-sentiment-negative {
+  border-left: 3px solid #FF3B30;
+  padding-left: 4px;
+}
+
+.mt-sentiment-neutral {
+  border-left: 3px solid #8E8E93;
+  padding-left: 4px;
+}

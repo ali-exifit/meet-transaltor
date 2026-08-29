@@ -1,15 +1,16 @@
 {
   "manifest_version": 3,
   "name": "Meetranslator By ProAlit",
-  "version": "1.0.0.1",
-  "description": "Meetranslator By ProAlit: Translates live captions in Google Meet.",
+  "version": "2.0.0",
+  "description": "Meetranslator By ProAlit: AI-powered live caption translation for Google Meet with multi-language support, analytics, and Apple-inspired design.",
   "permissions": [
     "activeTab",
     "scripting",
     "storage",
     "downloads",
     "tabs",
-    "windows"
+    "windows",
+    "unlimitedStorage"
   ],
   "background": {
     "service_worker": "service_worker.js"
@@ -31,12 +32,13 @@
     {
       "matches": ["<all_urls>"],
       "js": ["contentScript.js"],
-      "run_at": "document_end"
+      "run_at": "document_end",
+      "css": ["styles.css"]
     }
   ],
   "web_accessible_resources": [
     {
-  "resources": ["icons/*.png", "styles/*.css"],
+      "resources": ["icons/*.png", "styles/*.css"],
       "matches": ["<all_urls>"]
     }
   ]
